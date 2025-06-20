@@ -13,14 +13,12 @@ from mcp.server import NotificationOptions, Server
 from mcp.server.models import InitializationOptions
 
 from .orchestrator import MCPOrchestrator
-from .mcp_manager import MCPManager
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Initialize components
 orchestrator = MCPOrchestrator()
-mcp_manager = MCPManager()
 server = Server("mcp-orchestrator")
 
 @server.list_tools()
@@ -48,7 +46,7 @@ async def handle_list_tools() -> list[types.Tool]:
         ),
         types.Tool(
             name="execute",
-            description="Execute any MCP tool by describing what you want to do",
+            description="Get routing info for executing any MCP tool by describing what you want to do",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -123,7 +121,7 @@ async def handle_call_tool(
                 output += f"  Description: {result['description']}\n\n"
             
             return [types.TextContent(type="text", text=output)]
-        
+            
         elif name == "execute":
             request = arguments.get("request", "")
             params = arguments.get("params", {})
@@ -138,18 +136,19 @@ async def handle_call_tool(
             
             best_match = results[0]
             
-            # Execute via MCP manager
-            result = await mcp_manager.execute_tool(
-                best_match["mcp"],
-                best_match["tool"],
-                params
-            )
+            # Return routing information instead of trying to execute
+            output = f"To execute this request, use:\n\n"
+            output += f"**Tool**: {best_match['tool']}\n"
+            output += f"**From MCP**: {best_match['mcp']}\n"
+            output += f"**Confidence**: {best_match['confidence']:.2f}\n\n"
             
-            return [types.TextContent(
-                type="text",
-                text=f"Executed {best_match['tool']} from {best_match['mcp']}:\n\n{result}"
-            )]
-        
+            if params:
+                output += f"**With parameters**:\n```json\n{json.dumps(params, indent=2)}\n```\n\n"
+            
+            output += f"Use the actual `{best_match['tool']}` tool from the MCP tools list to execute this."
+            
+            return [types.TextContent(type="text", text=output)]
+            
         elif name == "list_capabilities":
             category = arguments.get("category")
             capabilities = await orchestrator.list_all_capabilities(category)
@@ -162,17 +161,35 @@ async def handle_call_tool(
                 output += "\n"
             
             return [types.TextContent(type="text", text=output)]
-        
+            
         elif name == "explain_tool":
             mcp_name = arguments["mcp_name"]
             tool_name = arguments["tool_name"]
             
-            explanation = await mcp_manager.get_tool_documentation(
-                mcp_name, tool_name
-            )
+            # Get tool info from registry
+            registry_path = Path(__file__).parent.parent / "config" / "registry.json"
+            with open(registry_path, 'r') as f:
+                registry = json.load(f)
             
-            return [types.TextContent(type="text", text=explanation)]
-        
+            mcp_config = registry["mcps"].get(mcp_name, {})
+            tools = mcp_config.get("tools", {})
+            tool_config = tools.get(tool_name, {})
+            
+            doc = f"**{tool_name}** (from {mcp_name})\n\n"
+            doc += f"Description: {tool_config.get('description', 'No description')}\n\n"
+            
+            if "parameters" in tool_config:
+                doc += "Parameters:\n"
+                for param, info in tool_config["parameters"].items():
+                    doc += f"  • {param}: {info.get('description', '')}\n"
+            
+            if "examples" in tool_config:
+                doc += "\nExamples:\n"
+                for example in tool_config["examples"]:
+                    doc += f"  • {example}\n"
+            
+            return [types.TextContent(type="text", text=doc)]
+            
         else:
             raise ValueError(f"Unknown tool: {name}")
     

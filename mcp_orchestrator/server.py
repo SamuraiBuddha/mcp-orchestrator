@@ -16,6 +16,9 @@ from mcp.server import Server
 from mcp.types import Tool, TextContent, ImageContent, EmbeddedResource
 from mcp.server.stdio import stdio_server
 
+# Import our connection manager
+from .connection import execute_on_mcp, connection_pool
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("mcp-orchestrator")
@@ -29,7 +32,6 @@ class MCPOrchestrator:
         self.credentials = self._load_credentials()
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
         self.capability_embeddings = self._compute_embeddings()
-        self.active_connections = {}
         
     def _load_registry(self) -> Dict[str, Any]:
         """Load MCP registry from config."""
@@ -99,13 +101,9 @@ class MCPOrchestrator:
         tools = mcp_config.get("tools", {})
         return tools.get(tool_name)
     
-    async def execute_on_mcp(self, mcp_name: str, tool_name: str, params: Dict[str, Any]) -> Any:
-        """Execute a tool on a specific MCP server."""
-        # TODO: Implement actual MCP communication
-        # This would involve starting the MCP process if not running,
-        # sending the request, and returning the response
-        logger.info(f"Would execute {tool_name} on {mcp_name} with params: {params}")
-        return {"status": "success", "message": f"Executed {tool_name} on {mcp_name}"}
+    def get_mcp_config(self, mcp_name: str) -> Optional[Dict[str, Any]]:
+        """Get configuration for a specific MCP."""
+        return self.registry.get("mcps", {}).get(mcp_name)
 
 # Global orchestrator instance
 orchestrator = None
@@ -308,12 +306,34 @@ def main():
             mcp_name, confidence = orchestrator.find_best_mcp(request)
             
             if mcp_name and confidence > 0.3:
-                # TODO: Actually execute on the MCP
-                result = await orchestrator.execute_on_mcp(mcp_name, "auto", params)
-                return [TextContent(
-                    type="text",
-                    text=f"Routed to {mcp_name} MCP\nResult: {json.dumps(result, indent=2)}"
-                )]
+                # Get MCP configuration
+                mcp_config = orchestrator.get_mcp_config(mcp_name)
+                if not mcp_config:
+                    return [TextContent(
+                        type="text",
+                        text=f"Configuration not found for {mcp_name} MCP."
+                    )]
+                
+                try:
+                    # Actually execute on the MCP using our connection manager
+                    result = await execute_on_mcp(mcp_name, "auto", params, mcp_config)
+                    
+                    # Format the result nicely
+                    if isinstance(result, list) and len(result) > 0:
+                        # Handle TextContent results
+                        result_text = "\n".join([item.get("text", str(item)) for item in result])
+                    else:
+                        result_text = json.dumps(result, indent=2)
+                    
+                    return [TextContent(
+                        type="text",
+                        text=f"Routed to {mcp_name} MCP\n\nResult:\n{result_text}"
+                    )]
+                except Exception as e:
+                    return [TextContent(
+                        type="text",
+                        text=f"Error executing on {mcp_name} MCP: {str(e)}"
+                    )]
             else:
                 return [TextContent(
                     type="text",
@@ -363,9 +383,18 @@ def main():
         
         return [TextContent(type="text", text=f"Unknown tool: {name}")]
     
+    # Register shutdown handler
+    async def shutdown():
+        """Clean up connections on shutdown."""
+        await connection_pool.close_all()
+    
     # Run the server
     logger.info("Starting MCP Orchestrator...")
-    stdio_server(server).run()
+    try:
+        stdio_server(server).run()
+    finally:
+        # Clean up connections
+        asyncio.run(shutdown())
 
 if __name__ == "__main__":
     main()

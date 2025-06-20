@@ -185,6 +185,46 @@
           }
         }
       }
+    },
+    "time": {
+      "description": "High-precision time operations with microsecond accuracy",
+      "capabilities": [
+        "precise timestamps",
+        "microsecond precision",
+        "epoch time",
+        "time conversion",
+        "instance identification",
+        "multi-instance coordination"
+      ],
+      "keywords": ["time", "timestamp", "date", "clock", "precision", "microsecond", "epoch", "current", "now", "when"],
+      "command": "python",
+      "args": ["-m", "mcp_time_precision"],
+      "tools": {
+        "get_precise_time": {
+          "description": "Get current time with microsecond precision",
+          "examples": ["what time is it", "current timestamp", "precise time", "time now"],
+          "parameters": {
+            "timezone": {"description": "Timezone name (e.g., 'America/New_York')"}
+          }
+        },
+        "get_epoch_micros": {
+          "description": "Get Unix epoch time in microseconds",
+          "examples": ["epoch time", "unix timestamp", "microsecond epoch"]
+        },
+        "get_instance_info": {
+          "description": "Get instance identification for multi-Claude coordination",
+          "examples": ["instance id", "which Claude am I"]
+        },
+        "convert_time_precision": {
+          "description": "Convert between time formats and precisions",
+          "examples": ["convert time", "change time format"],
+          "parameters": {
+            "time_value": {"description": "Time value to convert"},
+            "from_format": {"description": "Source format"},
+            "to_format": {"description": "Target format"}
+          }
+        }
+      }
     }
   }
 }

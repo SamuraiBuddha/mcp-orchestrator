@@ -225,6 +225,91 @@
           }
         }
       }
+    },
+    "freshbooks": {
+      "description": "Blockchain-powered accounting and financial management with Freshbooks",
+      "capabilities": [
+        "create invoices",
+        "track payments",
+        "manage expenses",
+        "blockchain audit trail",
+        "tax withholding",
+        "financial reporting",
+        "immutable records",
+        "compliance tracking",
+        "smart contracts",
+        "recurring invoices"
+      ],
+      "keywords": ["invoice", "payment", "expense", "accounting", "finance", "blockchain", "audit", "tax", "compliance", "freshbooks", "billing", "receipt"],
+      "command": "python",
+      "args": ["-m", "mcp_freshbooks_blockchain"],
+      "tools": {
+        "create_invoice": {
+          "description": "Create a new invoice with blockchain tracking",
+          "examples": ["create invoice", "new invoice", "bill client"],
+          "parameters": {
+            "client": {"description": "Client name or ID"},
+            "amount": {"description": "Invoice amount"},
+            "description": {"description": "Invoice description"},
+            "items": {"description": "Line items for the invoice"}
+          }
+        },
+        "list_invoices": {
+          "description": "List invoices with blockchain verification",
+          "examples": ["show invoices", "list invoices", "unpaid invoices"],
+          "parameters": {
+            "status": {"description": "Filter by status (paid, unpaid, overdue)"},
+            "client": {"description": "Filter by client"}
+          }
+        },
+        "record_payment": {
+          "description": "Record a payment with blockchain confirmation",
+          "examples": ["record payment", "payment received", "mark as paid"],
+          "parameters": {
+            "invoice_id": {"description": "Invoice ID"},
+            "amount": {"description": "Payment amount"},
+            "date": {"description": "Payment date"}
+          }
+        },
+        "add_expense": {
+          "description": "Track an expense with immutable blockchain record",
+          "examples": ["add expense", "record expense", "track spending"],
+          "parameters": {
+            "category": {"description": "Expense category"},
+            "amount": {"description": "Expense amount"},
+            "description": {"description": "Expense description"},
+            "receipt": {"description": "Receipt information"}
+          }
+        },
+        "generate_report": {
+          "description": "Generate financial reports with blockchain verification",
+          "examples": ["financial report", "profit and loss", "tax report"],
+          "parameters": {
+            "type": {"description": "Report type (P&L, tax, audit)"},
+            "period": {"description": "Reporting period"}
+          }
+        },
+        "get_balance": {
+          "description": "Get current account balance with blockchain proof",
+          "examples": ["account balance", "what's my balance", "financial status"]
+        },
+        "verify_blockchain": {
+          "description": "Verify blockchain integrity and audit trail",
+          "examples": ["verify records", "audit blockchain", "check integrity"],
+          "parameters": {
+            "transaction_id": {"description": "Specific transaction to verify"},
+            "date_range": {"description": "Date range to verify"}
+          }
+        },
+        "export_audit_trail": {
+          "description": "Export complete audit trail from blockchain",
+          "examples": ["export audit", "download records", "compliance report"],
+          "parameters": {
+            "format": {"description": "Export format (PDF, CSV, JSON)"},
+            "date_range": {"description": "Date range to export"}
+          }
+        }
+      }
     }
   }
 }

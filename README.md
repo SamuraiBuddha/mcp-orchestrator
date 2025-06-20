@@ -32,6 +32,33 @@ graph LR
     Orchestrator --> |Routes to| Others[Other MCPs...]
 ```
 
+## Quick Start
+
+1. **Install MCP Orchestrator**:
+```bash
+git clone https://github.com/SamuraiBuddha/mcp-orchestrator.git
+cd mcp-orchestrator
+pip install -e .
+```
+
+2. **Start LM Studio** with Granite embeddings model loaded
+
+3. **Configure Claude Desktop** to use ONLY the orchestrator:
+```json
+{
+  "mcpServers": {
+    "orchestrator": {
+      "command": "python",
+      "args": ["-m", "mcp_orchestrator"]
+    }
+  }
+}
+```
+
+4. **Restart Claude Desktop**
+
+That's it! Now Claude can access ALL your MCPs through natural language.
+
 ## Core Tools
 
 ### 1. `find_tool(query)`
@@ -65,102 +92,25 @@ help = explain_tool("github", "create_repository")
 # Returns parameters, examples, and best practices
 ```
 
-## Installation
+## What Makes It Special
 
-1. Clone this repository:
-```bash
-git clone https://github.com/SamuraiBuddha/mcp-orchestrator.git
-cd mcp-orchestrator
-```
+### 🌍 Multilingual Support
+Using IBM's Granite embeddings, the orchestrator understands requests in any language:
+- "Create a logo" 🇺🇸
+- "Créer un logo" 🇫🇷  
+- "ロゴを作成" 🇯🇵
+- "创建标志" 🇨🇳
 
-2. Install dependencies:
-```bash
-pip install -e .
-```
+All route to the same tool!
 
-3. Configure your MCPs in `config/registry.json`
+### 🧠 Intelligent Routing
+- Uses semantic embeddings to understand intent
+- Handles paraphrases and variations
+- Routes complex requests to multiple MCPs
+- Falls back gracefully when unsure
 
-4. Update your Claude Desktop config to use ONLY the orchestrator:
-```json
-{
-  "mcpServers": {
-    "orchestrator": {
-      "command": "python",
-      "args": ["-m", "mcp_orchestrator"]
-    }
-  }
-}
-```
-
-## Configuration
-
-### Registry Format
-
-The `config/registry.json` file maps capabilities to MCPs:
-
-```json
-{
-  "mcps": {
-    "comfyui": {
-      "description": "AI image generation with Stable Diffusion",
-      "command": "python",
-      "args": ["-m", "mcp_comfyui"],
-      "capabilities": [
-        "generate images",
-        "create logos",
-        "AI art",
-        "stable diffusion"
-      ],
-      "tools": {
-        "generate_image": {
-          "description": "Generate an image from text",
-          "examples": ["robot logo", "landscape painting"]
-        }
-      }
-    },
-    "github": {
-      "description": "GitHub repository management",
-      "capabilities": [
-        "create repository",
-        "manage code",
-        "pull requests",
-        "version control"
-      ]
-    }
-  }
-}
-```
-
-### Authentication
-
-Store MCP credentials in `config/credentials.json`:
-```json
-{
-  "github": {
-    "token": "${GITHUB_TOKEN}"
-  },
-  "openai": {
-    "api_key": "${OPENAI_API_KEY}"
-  }
-}
-```
-
-## Advanced Features
-
-### Intelligent Routing
-- Uses embeddings to match natural language to capabilities
-- Learns from usage patterns
-- Can route to multiple MCPs for complex requests
-
-### Performance
-- Caches MCP connections
-- Parallel execution for multi-MCP operations
-- Automatic retry with fallbacks
-
-### Monitoring
-- Tracks which tools are used most
-- Identifies missing capabilities
-- Suggests new MCPs to install
+### 📈 Scales Infinitely
+Add new MCPs to the registry and they're immediately available. No need to retrain or reconfigure Claude.
 
 ## Architecture Benefits
 
@@ -170,27 +120,28 @@ Store MCP credentials in `config/credentials.json`:
 4. **Better Error Handling**: Orchestrator can retry or fallback
 5. **Usage Analytics**: See which tools provide the most value
 
-## Examples
+## Real-World Example
 
-### Simple Request
-```python
-# Claude just asks for what it needs
-execute("check my GitHub notifications")
-# Orchestrator figures out to use GitHub MCP's list_notifications tool
-```
+**Before Orchestrator**:
+- Claude sees: `create_image`, `generate_image`, `make_image`, `generate_with_sdxl`, `comfyui_generate`, ...
+- User: "Which one do I use???"
 
-### Complex Request
-```python
-# This might use multiple MCPs
-execute("create a logo for Crisis Corps and save it to GitHub")
-# Routes to: ComfyUI for generation, then GitHub for saving
-```
+**After Orchestrator**:
+- Claude sees: `execute`
+- User: "Generate a Crisis Corps logo"
+- Orchestrator: *Routes to ComfyUI automatically*
 
-### Discovery
-```python
-find_tool("I need to analyze some data")
-# Returns options from multiple MCPs that can help
-```
+## Installation
+
+See [INSTALL.md](INSTALL.md) for detailed setup instructions.
+
+## Configuration
+
+The orchestrator is configured via `config/registry.json`. Each MCP entry includes:
+- Description and capabilities
+- Keywords for better matching
+- Command to launch the MCP
+- Tool definitions with examples
 
 ## Future Enhancements
 
@@ -199,6 +150,18 @@ find_tool("I need to analyze some data")
 - [ ] Load balancing across multiple instances
 - [ ] Natural language MCP creation
 - [ ] Integration with CORTEX for AI orchestration
+- [ ] Blockchain-based memory transactions
+- [ ] Multi-agent coordination
+
+## The Vision
+
+Imagine a world where:
+- Adding a new AI capability is as simple as installing an MCP
+- Claude automatically knows how to use it
+- No more tool overload or confusion
+- Perfect routing every time
+
+That's what MCP Orchestrator enables.
 
 ## Contributing
 
@@ -207,3 +170,7 @@ This orchestrator is designed to grow with your MCP ecosystem. Add new MCPs to t
 ## License
 
 MIT License - Use freely in your AI infrastructure!
+
+---
+
+*Built with ❤️ for the AI community by someone who got tired of scrolling through 100+ tools*

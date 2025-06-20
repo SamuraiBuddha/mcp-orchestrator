@@ -2,7 +2,7 @@
 
 **The ONE MCP to rule them all!**
 
-MCP Orchestrator solves the "too many tools" problem by providing a single, intelligent interface that routes requests to the appropriate MCP servers. Instead of overwhelming Claude with 100+ tools, it only needs to know about the Orchestrator.
+MCP Orchestrator solves the "too many tools" problem by providing a single, intelligent interface that helps Claude find the right tool among 100+ options. Instead of overwhelming Claude with all those tools, it provides smart routing guidance.
 
 ## The Problem It Solves
 
@@ -14,23 +14,22 @@ When you have many MCP servers installed:
 
 ## The Solution
 
-MCP Orchestrator acts as an intelligent router:
-- **Single Entry Point**: Claude only sees 3-4 orchestrator tools
-- **Smart Routing**: Natural language requests get routed to the right MCP
-- **Discovery**: Find tools by describing what you need
-- **Central Config**: Manage all MCP credentials in one place
+MCP Orchestrator acts as an intelligent tool finder:
+- **Single Entry Point**: Claude only sees 4 orchestrator tools
+- **Smart Discovery**: Natural language requests find the right tool
+- **Tool Guidance**: Returns which actual tool to use
+- **Central Registry**: All MCP capabilities in one place
 
 ## How It Works
 
 ```mermaid
 graph LR
     Claude[Claude] --> |"I need to generate an image"| Orchestrator[MCP Orchestrator]
-    Orchestrator --> |Routes to| ComfyUI[ComfyUI MCP]
-    Orchestrator --> |Routes to| GitHub[GitHub MCP]
-    Orchestrator --> |Routes to| Memory[Memory MCP]
-    Orchestrator --> |Routes to| Docker[Docker MCP]
-    Orchestrator --> |Routes to| Others[Other MCPs...]
+    Orchestrator --> |"Use generate_image from comfyui"| Claude
+    Claude --> |Calls actual tool| ComfyUI[ComfyUI MCP]
 ```
+
+**Important**: The orchestrator doesn't execute tools itself - it tells Claude which tool to use!
 
 ## Quick Start
 
@@ -43,52 +42,62 @@ pip install -e .
 
 2. **Start LM Studio** with Granite embeddings model loaded
 
-3. **Configure Claude Desktop** to use ONLY the orchestrator:
+3. **Configure Claude Desktop** to include the orchestrator alongside your other MCPs:
 ```json
 {
   "mcpServers": {
     "orchestrator": {
       "command": "python",
       "args": ["-m", "mcp_orchestrator"]
-    }
+    },
+    "comfyui": { ... },
+    "github": { ... },
+    "memory": { ... }
+    // Keep all your existing MCPs!
   }
 }
 ```
 
 4. **Restart Claude Desktop**
 
-That's it! Now Claude can access ALL your MCPs through natural language.
+Now Claude has both the orchestrator AND all your regular tools available!
 
 ## Core Tools
 
 ### 1. `find_tool(query)`
 Discover which MCP and tool to use for a task:
 ```python
-result = find_tool("I need to create a logo")
-# Returns: {"mcp": "comfyui", "tool": "generate_image", "confidence": 0.95}
+# Ask: "I need to create a logo"
+# Returns: 
+# **comfyui** → generate_image
+#   Confidence: 0.95
+#   Description: Generate images using AI
 ```
 
 ### 2. `execute(request, params)`
-Execute a request without knowing which MCP to use:
+Get routing information for any request:
 ```python
-result = execute(
-    "generate a robot logo",
-    {"style": "cyberpunk", "size": "1024x1024"}
-)
-# Automatically routes to ComfyUI MCP
+# Ask: "generate a robot logo"
+# Returns:
+# To execute this request, use:
+# **Tool**: generate_image
+# **From MCP**: comfyui
+# **Confidence**: 0.92
+# 
+# Use the actual `generate_image` tool from the MCP tools list to execute this.
 ```
 
 ### 3. `list_capabilities(category)`
 See what's available:
 ```python
-caps = list_capabilities("image")
+# Ask: list_capabilities("image")
 # Returns all image-related tools across all MCPs
 ```
 
 ### 4. `explain_tool(mcp_name, tool_name)`
 Get detailed help:
 ```python
-help = explain_tool("github", "create_repository")
+# Ask: explain_tool("github", "create_repository")
 # Returns parameters, examples, and best practices
 ```
 
@@ -103,69 +112,64 @@ Using IBM's Granite embeddings, the orchestrator understands requests in any lan
 
 All route to the same tool!
 
-### 🧠 Intelligent Routing
+### 🎯 Intelligent Routing
 - Uses semantic embeddings to understand intent
 - Handles paraphrases and variations
-- Routes complex requests to multiple MCPs
+- Provides confidence scores
 - Falls back gracefully when unsure
 
 ### 📈 Scales Infinitely
-Add new MCPs to the registry and they're immediately available. No need to retrain or reconfigure Claude.
+Add new MCPs to the registry and they're immediately discoverable. No need to retrain or reconfigure.
 
 ## Architecture Benefits
 
-1. **Reduced Cognitive Load**: Claude only needs to understand 4 tools instead of 100+
-2. **Dynamic Discovery**: New MCPs can be added without changing configs
-3. **Central Management**: One place for all credentials and configs
-4. **Better Error Handling**: Orchestrator can retry or fallback
-5. **Usage Analytics**: See which tools provide the most value
+1. **Reduced Cognitive Load**: Claude focuses on 4 discovery tools instead of 100+ execution tools
+2. **Better Tool Discovery**: Find tools by describing what you need
+3. **Central Registry**: One place to document all capabilities
+4. **Usage Analytics**: See which tools provide the most value
+5. **Easier Debugging**: Know exactly which tool will be used
 
 ## Real-World Example
 
-**Before Orchestrator**:
-- Claude sees: `create_image`, `generate_image`, `make_image`, `generate_with_sdxl`, `comfyui_generate`, ...
-- User: "Which one do I use???"
+**Without Orchestrator**:
+- Claude sees 100+ tools with confusing names
+- User: "Which one generates images???"
+- Claude: *Tries to guess from tool names*
 
-**After Orchestrator**:
-- Claude sees: `execute`
+**With Orchestrator**:
 - User: "Generate a Crisis Corps logo"
-- Orchestrator: *Routes to ComfyUI automatically*
-
-## Installation
-
-See [INSTALL.md](INSTALL.md) for detailed setup instructions.
+- Orchestrator: "Use `generate_image` from comfyui MCP"
+- Claude: *Calls the right tool directly*
 
 ## Configuration
 
 The orchestrator is configured via `config/registry.json`. Each MCP entry includes:
 - Description and capabilities
 - Keywords for better matching
-- Command to launch the MCP
 - Tool definitions with examples
 
 ## Future Enhancements
 
 - [ ] Web UI for managing MCP registry
-- [ ] Automatic MCP discovery and installation
-- [ ] Load balancing across multiple instances
+- [ ] Automatic MCP discovery
 - [ ] Natural language MCP creation
 - [ ] Integration with CORTEX for AI orchestration
-- [ ] Blockchain-based memory transactions
+- [ ] Blockchain-based audit trail
 - [ ] Multi-agent coordination
 
 ## The Vision
 
 Imagine a world where:
 - Adding a new AI capability is as simple as installing an MCP
-- Claude automatically knows how to use it
+- Claude automatically knows how to find and use it
 - No more tool overload or confusion
-- Perfect routing every time
+- Perfect tool discovery every time
 
 That's what MCP Orchestrator enables.
 
 ## Contributing
 
-This orchestrator is designed to grow with your MCP ecosystem. Add new MCPs to the registry and they're immediately available through the unified interface.
+This orchestrator is designed to grow with your MCP ecosystem. Add new MCPs to the registry and they're immediately discoverable through the unified interface.
 
 ## License
 

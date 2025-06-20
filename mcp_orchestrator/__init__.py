@@ -1,6 +1,7 @@
-"""MCP Orchestrator - Universal router for all MCP servers."""
+"""MCP Orchestrator - The ONE MCP to rule them all"""
 
+from .orchestrator import MCPOrchestrator
 from .server import main
 
 __version__ = "0.1.0"
-__all__ = ["main"]
+__all__ = ["MCPOrchestrator", "main"]

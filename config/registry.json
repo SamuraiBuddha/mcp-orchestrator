@@ -1,0 +1,190 @@
+{
+  "mcps": {
+    "comfyui": {
+      "description": "AI image generation with Stable Diffusion and ComfyUI",
+      "capabilities": [
+        "generate images",
+        "create logos",
+        "AI art generation",
+        "stable diffusion",
+        "text to image",
+        "image creation",
+        "visual content",
+        "SDXL models"
+      ],
+      "keywords": ["image", "picture", "logo", "art", "generate", "create", "visual", "draw", "design"],
+      "command": "python",
+      "args": ["-m", "mcp_comfyui"],
+      "tools": {
+        "generate_image": {
+          "description": "Generate an image from a text prompt",
+          "examples": ["robot logo", "landscape painting", "Crisis Corps emblem"],
+          "parameters": {
+            "prompt": {"description": "Text description of the image"},
+            "negative_prompt": {"description": "What to avoid in the image"},
+            "width": {"description": "Image width in pixels"},
+            "height": {"description": "Image height in pixels"}
+          }
+        },
+        "list_models": {
+          "description": "List available AI models",
+          "examples": ["show models", "what models are available"]
+        }
+      }
+    },
+    "github": {
+      "description": "GitHub repository management and code operations",
+      "capabilities": [
+        "create repository",
+        "manage code",
+        "pull requests",
+        "git operations",
+        "version control",
+        "commits",
+        "branches",
+        "issues",
+        "notifications"
+      ],
+      "keywords": ["git", "code", "repository", "commit", "push", "pull", "branch", "PR", "issue"],
+      "command": "python",
+      "args": ["-m", "mcp_github"],
+      "tools": {
+        "create_repository": {
+          "description": "Create a new GitHub repository",
+          "examples": ["create repo", "new repository"],
+          "parameters": {
+            "name": {"description": "Repository name"},
+            "description": {"description": "Repository description"},
+            "private": {"description": "Whether repo should be private"}
+          }
+        },
+        "push_files": {
+          "description": "Push files to a GitHub repository",
+          "examples": ["push code", "commit files", "save to GitHub"],
+          "parameters": {
+            "repo": {"description": "Repository name"},
+            "files": {"description": "Files to push"},
+            "message": {"description": "Commit message"}
+          }
+        },
+        "list_notifications": {
+          "description": "Check GitHub notifications",
+          "examples": ["check notifications", "what's new on GitHub"]
+        }
+      }
+    },
+    "memory": {
+      "description": "Persistent memory and knowledge graph operations",
+      "capabilities": [
+        "store information",
+        "recall memories",
+        "knowledge graph",
+        "persistent storage",
+        "remember conversations",
+        "search memories",
+        "create entities",
+        "add observations"
+      ],
+      "keywords": ["remember", "recall", "memory", "store", "retrieve", "knowledge", "history", "save"],
+      "command": "python",
+      "args": ["-m", "mcp_memory"],
+      "tools": {
+        "search_nodes": {
+          "description": "Search for information in memory",
+          "examples": ["what did we discuss", "find memories about", "search for"],
+          "parameters": {
+            "query": {"description": "Search query"}
+          }
+        },
+        "add_observations": {
+          "description": "Add new information to memory",
+          "examples": ["remember this", "store this information"],
+          "parameters": {
+            "entity": {"description": "Entity to add observation to"},
+            "observation": {"description": "Information to remember"}
+          }
+        }
+      }
+    },
+    "docker": {
+      "description": "Docker container and image management",
+      "capabilities": [
+        "list containers",
+        "manage containers",
+        "docker compose",
+        "container logs",
+        "image management",
+        "volume management"
+      ],
+      "keywords": ["docker", "container", "image", "compose", "deployment", "volume"],
+      "command": "python",
+      "args": ["-m", "mcp_docker"],
+      "tools": {
+        "list_containers": {
+          "description": "List Docker containers",
+          "examples": ["show containers", "docker ps"]
+        },
+        "container_logs": {
+          "description": "Get container logs",
+          "examples": ["show logs", "container output"],
+          "parameters": {
+            "container": {"description": "Container name or ID"}
+          }
+        }
+      }
+    },
+    "filesystem": {
+      "description": "File system operations and management",
+      "capabilities": [
+        "read files",
+        "write files",
+        "list directories",
+        "file operations",
+        "search files"
+      ],
+      "keywords": ["file", "directory", "folder", "read", "write", "list", "search"],
+      "command": "python",
+      "args": ["-m", "mcp_filesystem"],
+      "tools": {
+        "read_file": {
+          "description": "Read file contents",
+          "examples": ["read file", "show file", "cat"],
+          "parameters": {
+            "path": {"description": "File path"}
+          }
+        },
+        "write_file": {
+          "description": "Write content to a file",
+          "examples": ["write file", "save to file"],
+          "parameters": {
+            "path": {"description": "File path"},
+            "content": {"description": "Content to write"}
+          }
+        }
+      }
+    },
+    "sequential_thinking": {
+      "description": "Structured problem-solving and complex reasoning",
+      "capabilities": [
+        "break down problems",
+        "step-by-step thinking",
+        "complex reasoning",
+        "thought revision",
+        "hypothesis testing"
+      ],
+      "keywords": ["think", "reason", "analyze", "solve", "plan", "steps", "complex"],
+      "command": "python",
+      "args": ["-m", "mcp_sequential_thinking"],
+      "tools": {
+        "think_step": {
+          "description": "Process one step of complex reasoning",
+          "examples": ["think through this", "analyze step by step"],
+          "parameters": {
+            "thought": {"description": "Current thinking step"},
+            "next_needed": {"description": "Whether more steps are needed"}
+          }
+        }
+      }
+    }
+  }
+}

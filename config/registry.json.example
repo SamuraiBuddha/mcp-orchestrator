@@ -1,0 +1,186 @@
+{
+  "mcps": {
+    "comfyui": {
+      "description": "AI image generation with Stable Diffusion",
+      "command": "python",
+      "args": ["-m", "mcp_comfyui"],
+      "capabilities": [
+        "generate images",
+        "create logos",
+        "AI art",
+        "stable diffusion",
+        "text to image",
+        "image generation"
+      ],
+      "tools": {
+        "generate_image": {
+          "description": "Generate an image from text prompt",
+          "parameters": {
+            "prompt": "Text description of the image",
+            "negative_prompt": "Things to avoid in the image",
+            "width": "Image width (default: 1024)",
+            "height": "Image height (default: 1024)"
+          },
+          "examples": [
+            "cyberpunk robot logo",
+            "serene landscape painting",
+            "technical blueprint drawing"
+          ]
+        },
+        "generate_with_lora": {
+          "description": "Generate image with LoRA model",
+          "parameters": {
+            "prompt": "Text description",
+            "lora_name": "Name of LoRA model",
+            "lora_strength": "LoRA influence (0-1)"
+          }
+        }
+      }
+    },
+    "github": {
+      "description": "GitHub repository and code management",
+      "command": "python",
+      "args": ["-m", "mcp_github"],
+      "capabilities": [
+        "create repository",
+        "manage code",
+        "pull requests",
+        "version control",
+        "git operations",
+        "issue tracking",
+        "notifications"
+      ],
+      "tools": {
+        "create_repository": {
+          "description": "Create a new GitHub repository",
+          "parameters": {
+            "name": "Repository name",
+            "description": "Repository description",
+            "private": "Make repository private (true/false)"
+          }
+        },
+        "list_notifications": {
+          "description": "Check GitHub notifications",
+          "parameters": {}
+        }
+      }
+    },
+    "memory": {
+      "description": "Knowledge graph and memory persistence",
+      "command": "python",
+      "args": ["-m", "mcp_memory"],
+      "capabilities": [
+        "store information",
+        "knowledge graph",
+        "remember context",
+        "search memories",
+        "persistent storage",
+        "entity management",
+        "relationship tracking"
+      ],
+      "tools": {
+        "search_nodes": {
+          "description": "Search for entities in the knowledge graph",
+          "parameters": {
+            "query": "Search query"
+          }
+        },
+        "create_entities": {
+          "description": "Create new entities in the knowledge graph",
+          "parameters": {
+            "entities": "Array of entity objects"
+          }
+        }
+      }
+    },
+    "docker": {
+      "description": "Docker container management",
+      "command": "python",
+      "args": ["-m", "mcp_docker"],
+      "capabilities": [
+        "manage containers",
+        "docker operations",
+        "container logs",
+        "image management",
+        "docker compose",
+        "volume management",
+        "network management"
+      ]
+    },
+    "filesystem": {
+      "description": "File system operations",
+      "command": "python",
+      "args": ["-m", "mcp_filesystem"],
+      "capabilities": [
+        "read files",
+        "write files",
+        "list directories",
+        "file operations",
+        "manage folders",
+        "search files",
+        "file metadata"
+      ]
+    },
+    "sequential_thinking": {
+      "description": "Complex problem solving through step-by-step analysis",
+      "command": "python",
+      "args": ["-m", "mcp_sequential"],
+      "capabilities": [
+        "break down complex problems",
+        "step by step analysis",
+        "thought revision",
+        "hypothesis testing",
+        "branching logic",
+        "problem decomposition"
+      ]
+    },
+    "time": {
+      "description": "High-precision time operations",
+      "command": "python",
+      "args": ["-m", "mcp_time_precision"],
+      "capabilities": [
+        "get current time",
+        "microsecond precision",
+        "timezone conversion",
+        "epoch timestamps",
+        "time calculations"
+      ]
+    },
+    "nodejs": {
+      "description": "Execute JavaScript in Docker containers",
+      "command": "python",
+      "args": ["-m", "mcp_nodejs"],
+      "capabilities": [
+        "run javascript",
+        "npm packages",
+        "node.js execution",
+        "ephemeral containers",
+        "sandbox environment"
+      ]
+    },
+    "portainer": {
+      "description": "Portainer Docker management interface",
+      "command": "python",
+      "args": ["-m", "mcp_portainer_bridge"],
+      "capabilities": [
+        "remote docker management",
+        "portainer integration",
+        "multi-host docker",
+        "container orchestration",
+        "stack deployment"
+      ]
+    },
+    "desktop_commander": {
+      "description": "Local file system and command execution",
+      "command": "python",
+      "args": ["-m", "mcp_desktop_commander"],
+      "capabilities": [
+        "execute commands",
+        "local file access",
+        "process management",
+        "system operations",
+        "terminal commands"
+      ]
+    }
+  }
+}
